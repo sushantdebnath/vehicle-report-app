@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicle Reporting</title>
+  <script src="/static/xlsx.full.min.js"></script>
+  <script src="/static/script.js" defer></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    button, select { margin: 6px; padding: 6px 12px; }
+    .city-section { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; }
+    th { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h2>Vehicle Report Entry</h2>
+<label for="globalEntryDate">Entry Date:</label>
+<input type="date" id="globalEntryDate" onchange="applyGlobalEntryDate()" />
+  <label for="citySelect">Select City:</label>
+  <select id="citySelect">
+    <option value="">--Choose--</option>
+    <option value="Hailakandi">Hailakandi</option>
+    <option value="Silchar">Silchar</option>
+    <option value="Karimganj">Karimganj</option>
+    <option value="Guwahati">Guwahati</option>
+    <option value="Shillong">Shillong</option>
+  </select>
+ <button id="addCityBtn">➕ Add City</button>
+  <button id="submitBtn">📤 Submit to DB</button>
+  <button id="downloadExcelBtn">📥 Save & Download Excel</button>
+  <a href="/view_logs" target="_blank"><button>📊 View Logs</button></a>
+<label for="entryDateFilter">View Logs for Entry Date:</label>
+<input type="date" id="entryDateFilter" />
+<button onclick="viewLogsByDate()">🔍 View Logs by Date</button>
+
+  <div id="citySections"></div>
+</body>
+</html>
+
