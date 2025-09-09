@@ -52,7 +52,7 @@ function formatTime12(timeStr) {
 window.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.getElementById("addCityBtn");
   const submitBtn = document.getElementById("submitBtn");
-  const excelBtn = document.getElementById("downloadExcelBtn")?.addEventListener("click", submitAndDownload);
+  const excelBtn = document.getElementById("downloadExcelBtn")?.addEventListener("click", generateExcel);
   if (addBtn) addBtn.addEventListener("click", addCitySection);
   if (submitBtn) submitBtn.addEventListener("click", submitData);
   if (excelBtn) excelBtn.addEventListener("click", generateExcel);
@@ -318,6 +318,44 @@ function submitAndDownload() {
     });
 }
 
+row.querySelectorAll("input, select").forEach(el => {
+  el.addEventListener("change", () => {
+    const cells = row.querySelectorAll("td");
+    const city = section.querySelector(".city-title").textContent.replace("City: ", "");
+    const sr = cells[0].querySelector("input")?.value.trim();
+    const vrn = cells[1].querySelector("input")?.value.trim();
+    const model = cells[2].querySelector("input")?.value.trim();
+    const entryDate = cells[3].querySelector("input")?.value;
+    const inTime = cells[4].querySelector("input")?.value;
+    const outDateEl = cells[5].querySelector("input");
+    const outTimeEl = cells[6].querySelector("input");
+    const remarks = cells[7].querySelector("select")?.value;
+
+    if (!sr && !vrn && !model && !entryDate && !inTime) return;
+
+    const payload = {
+      city,
+      sr_no: sr,
+      vrn,
+      model,
+      entry_date: entryDate,
+      in_time: inTime,
+      out_date: outDateEl && !outDateEl.disabled ? outDateEl.value : "",
+      out_time: outTimeEl && !outTimeEl.disabled ? outTimeEl.value : "",
+      remarks
+    };
+
+    fetch("/save_reports_row", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => console.log("Auto-saved:", data.status))
+    .catch(err => console.error("Auto-save failed:", err));
+  });
+});
+
 
 function generateExcel() {
   const wb = XLSX.utils.book_new();
@@ -377,4 +415,3 @@ function generateExcel() {
   const filename = `Vehicle_report_${formattedDate}.xlsx`;
   XLSX.writeFile(wb, filename);
 }
-
